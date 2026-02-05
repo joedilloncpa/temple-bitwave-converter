@@ -215,6 +215,15 @@ if uploaded_file is not None:
     buy_trades = len(grouped[grouped["side"].str.strip().str.lower() == "buy"])
     total_output_rows = len(output_df)
 
+    # Calculate CANTON and USDC totals
+    acquire_df = output_df[output_df["transactionType"] == "tradeAcquire"]
+    dispose_df = output_df[output_df["transactionType"] == "tradeDispose"]
+
+    canton_in = acquire_df.loc[acquire_df["amountTicker"] == "CANTON", "amount"].sum()
+    canton_out = dispose_df.loc[dispose_df["amountTicker"] == "CANTON", "amount"].sum()
+    usdc_in = acquire_df.loc[acquire_df["amountTicker"] == "USDC", "amount"].sum()
+    usdc_out = dispose_df.loc[dispose_df["amountTicker"] == "USDC", "amount"].sum()
+
     st.markdown("### Conversion Summary")
 
     col1, col2, col3, col4 = st.columns(4)
@@ -240,6 +249,32 @@ if uploaded_file is not None:
         st.markdown(
             f'<div class="metric-card"><div class="label">Output Rows</div>'
             f'<div class="value">{total_output_rows:,}</div></div>',
+            unsafe_allow_html=True,
+        )
+
+    col5, col6, col7, col8 = st.columns(4)
+    with col5:
+        st.markdown(
+            f'<div class="metric-card"><div class="label">CANTON In</div>'
+            f'<div class="value">{canton_in:,.2f}</div></div>',
+            unsafe_allow_html=True,
+        )
+    with col6:
+        st.markdown(
+            f'<div class="metric-card"><div class="label">CANTON Out</div>'
+            f'<div class="value">{canton_out:,.2f}</div></div>',
+            unsafe_allow_html=True,
+        )
+    with col7:
+        st.markdown(
+            f'<div class="metric-card"><div class="label">USDC In</div>'
+            f'<div class="value">{usdc_in:,.2f}</div></div>',
+            unsafe_allow_html=True,
+        )
+    with col8:
+        st.markdown(
+            f'<div class="metric-card"><div class="label">USDC Out</div>'
+            f'<div class="value">{usdc_out:,.2f}</div></div>',
             unsafe_allow_html=True,
         )
 
